@@ -1,7 +1,6 @@
 package echo_graphql
 
 import (
-	"context"
 	"encoding/hex"
 	"encoding/json"
 	"hash/crc32"
@@ -18,7 +17,6 @@ type Params struct {
 	Query         string                 `json:"query"`
 	OperationName string                 `json:"operationName"`
 	Variables     map[string]interface{} `json:"variables"`
-	Ctx           context.Context
 }
 
 func hashBody(body io.ReadCloser) (string, []byte, error) {
@@ -56,13 +54,10 @@ func NewEchoHandle(options EchoHandleOptions) echo.HandlerFunc {
 			if err = json.Unmarshal(bs, params); err != nil {
 				return
 			}
-			params.Ctx = context.Request().Context()
-			ret = options.Schema.Exec(params.Ctx, params.Query, params.OperationName, params.Variables)
+			ret = options.Schema.Exec(context.Request().Context(), params.Query, params.OperationName, params.Variables)
 			go func() {
-				if options.SkipCache != nil {
-					if options.SkipCache(params) {
-						return
-					}
+				if options.SkipCache != nil && options.SkipCache(params) {
+					return
 				}
 				options.Cache.Set(key, ret)
 			}()

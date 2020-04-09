@@ -13,7 +13,7 @@ e.Any("/graphql", echo_graphql.NewEchoHandle(echo_graphql.EchoHandleOptions{
 }))
 ```
 
-### Use Cache
+### Use cache to improve performance  
 cache all graphql request by post body hash
 ```go
 import (

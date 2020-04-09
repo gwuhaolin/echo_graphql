@@ -33,17 +33,11 @@ e.Any("/graphql", echo_graphql.NewEchoHandle(echo_graphql.EchoHandleOptions{
 
 skip cache some request 
 ```go
-import (
-	"github.com/graph-gophers/graphql-go"
-	"github.com/labstack/echo"
-	"github.com/gwuhaolin/lfucache"
-)
-
 e := echo.New()
 graphqlSchema := graphql.MustParseSchema(`your graphql schema define content...`)
 
 e.Any("/graphql", echo_graphql.NewEchoHandle(echo_graphql.EchoHandleOptions{
-	Schema: graphqlSchema,
+	Schema: graphqlSchema, 
     Cache:  lfucache.NewLfuCache(1024),
     SkipCache: func(params *Params){
         retuen true // don't cache this request

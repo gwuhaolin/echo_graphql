@@ -21,6 +21,7 @@ type Params struct {
 
 func hashBody(body io.ReadCloser) (string, []byte, error) {
 	bs, err := ioutil.ReadAll(body)
+	defer body.Close()
 	if err != nil {
 		return "", nil, err
 	}
